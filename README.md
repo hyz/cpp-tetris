@@ -6,8 +6,7 @@
 - http://en.wikipedia.org/wiki/Algorithms_%2B_Data_Structures_%3D_Programs
 - http://en.wikipedia.org/wiki/Model-view-controller
 
-cpp-tetris
-是我用来表达对这些编程思想的理解的尝试。
+cpp-tetris 尝试对这些编程思想的理解的表达。
 
 依赖库
 =============
