@@ -34,7 +34,7 @@ struct Size : array<size_t,2>
 template <typename T>
 std::ostream& print2d(std::ostream& out, T const& m)
 {
-    return out;
+    // return out; //
     for (Point a = make_array(0,0); a[0] != m.size(); ++a[0]) {
         for (a[1] = 0; a[1] != m[0].size()-1; ++a[1])
             out << int( m(a) ) <<" ";
