@@ -1,12 +1,21 @@
 # tetris
 
-MVC设计。两个文件
-- multi_array_tetris.hpp , 数据结构
-- main.cpp , Model/View/Controller
+- Algorithms + Data Structures = Programs
+- Algorithm = Logic + Control
+- Model/View/Control
+- http://en.wikipedia.org/wiki/Algorithms_%2B_Data_Structures_%3D_Programs
+- http://en.wikipedia.org/wiki/Model-view-controller
+
+cpp-tetris
+是我用来表达对这些编程思想的理解的尝试。
 
 依赖库
 =============
 - Boost.Multi_Array
 - Boost.MSM
 - C++ Cinder library (http://libcinder.org)
+
+只含两个文件
+- multi_array_tetris.hpp
+- main.cpp
 
