@@ -51,7 +51,7 @@ struct Ev_Menu {};
 struct Ev_Blink {};
 struct Ev_EndBlink {};
 
-template <class M, class Ev> void do_event(M& m, Ev const& ev)
+template <class M, class Ev> void process_event(M& m, Ev const& ev)
 {
     static char const* const state_names[] = {
         "Preview", "Menu", "Playing", "GameOver", "NonPlaying", "YesPlaying", "Paused", "Quit", "Busy", "Blinking", "", "", ""};
@@ -59,9 +59,9 @@ template <class M, class Ev> void do_event(M& m, Ev const& ev)
     m.process_event(ev);
     LOG << "=E " << state_names[m.current_state()[0]] <<"\n";
 }
-template <class Ev> void do_event(Ev const& ev)
+template <class Ev> void process_event(Ev const& ev)
 {
-    do_event(Top(), ev);
+    process_event(Top(), ev);
 }
 
 struct Model : Tetris_Basic
@@ -283,7 +283,7 @@ struct PrintS
     }
 };
 
-void TheEnd();
+void The_End();
 struct Main_;
 msm::back::state_machine<Main_>& Top();
 
@@ -316,7 +316,7 @@ public:
     struct Back
     {
         template <class Ev, class SM, class SS, class TS>
-        void operator()(Ev const& ev, SM&, SS&, TS&) { do_event( Ev_Back() ); }
+        void operator()(Ev const& ev, SM&, SS&, TS&) { process_event( Ev_Back() ); }
     };
 
     struct Menu_ : msm::front::state_machine_def<Menu_>
@@ -348,7 +348,7 @@ public:
                     top.view.play_sound( "rotate.wav" );
                 } else if (act(ev, top, sm, "speedown.wav")) {
                 } else {
-                    do_event(top, Ev_Over());
+                    process_event(top, Ev_Over());
                     return;
                 }
             }
@@ -383,7 +383,7 @@ public:
         struct Blinking : msm::front::state<>
         {
             template <class Ev, class SM> void on_entry(Ev const&, SM& sm) {
-                do_event(sm, Ev_EndBlink()); // ;
+                process_event(sm, Ev_EndBlink()); // ;
             }
             template <class Ev, class SM> void on_exit(Ev const&, SM& ) {}
         };
@@ -433,7 +433,7 @@ public:
                 ++n_reset_;
             } else {
                 n_reset_ = 0;
-                do_event(Ev_Timeout());
+                process_event(Ev_Timeout());
             }
             milliseconds ms = Top().model.time2falling(n_reset_);
             timer_->expires_from_now(ms);
@@ -498,7 +498,7 @@ public:
     struct Quit : msm::front::terminate_state<>
     {
         template <class Ev, class SM> void on_entry(Ev const& ev, SM& top) {
-            top.io_service().post(&TheEnd);
+            top.io_service().post(&The_End);
         }
         template <class Ev, class SM> void on_exit(Ev const&, SM& top) {
         }
@@ -543,7 +543,7 @@ public:
     void update() { main_.update(); }
     void draw() { main_.draw(); }
 
-    void mouseDown( MouseEvent event ) { do_event(main_, Ev_Menu()); }
+    void mouseDown( MouseEvent event ) { process_event(main_, Ev_Menu()); }
     void keyDown( KeyEvent event );
 };
 
@@ -551,7 +551,7 @@ msm::back::state_machine<Main_>& Top()
 {
     return app_->main_;
 }
-void TheEnd()
+void The_End()
 {
     app_->main_.stop();
     app_->quit();
@@ -567,23 +567,23 @@ void App_::keyDown( KeyEvent event )
 
     if (isModDown) {
         switch ( event.getChar() ){
-			case 'n': do_event(main_, Ev_Play()); break;
-		    case 'c': do_event(main_, Ev_Quit()); break;
+			case 'n': process_event(main_, Ev_Play()); break;
+		    case 'c': process_event(main_, Ev_Quit()); break;
         }
 		return;
     }
 
     int ev = 0;
     switch (event.getCode()) {
-        case KeyEvent::KEY_ESCAPE: do_event(main_, Ev_Back()); return;
-        case KeyEvent::KEY_SPACE: do_event(main_, Ev_Menu()); return;
+        case KeyEvent::KEY_ESCAPE: process_event(main_, Ev_Back()); return;
+        case KeyEvent::KEY_SPACE: process_event(main_, Ev_Menu()); return;
         case KeyEvent::KEY_UP: ev = 2; break;
         case KeyEvent::KEY_LEFT: ev = -1; break;
         case KeyEvent::KEY_RIGHT: ev = 1; break;
         case KeyEvent::KEY_DOWN: ev = 0; break;
         default: return;
     }
-    do_event(main_, Ev_Input(ev));
+    process_event(main_, Ev_Input(ev));
 }
 
 //int _testmain()
@@ -591,22 +591,22 @@ void App_::keyDown( KeyEvent event )
 //    boost::asio::io_service io_s;
 //    Main te(boost::ref(io_s));
 //
-//    do_event(te, Ev_Input(1));
-//    do_event(te, Ev_Play());
-//    do_event(te, Ev_Input(0));
-//    do_event(te, Ev_Blink());
-//    do_event(te, Ev_Back());
-//  //do_event(te, Ev_Resume());
-//    do_event(te, Ev_Input(1));
-//    do_event(te, Ev_EndBlink());
-//    do_event(te, Ev_Input(0));
-//    do_event(te, Ev_Blink());
-//    do_event(te, Ev_Input(1));
-//    do_event(te, Ev_EndBlink());
-//    do_event(te, Ev_Input(0));
-//    do_event(te, Ev_Quit());
-//    do_event(te, Ev_Quit());
-//  //do_event(te, Ev_Quit());
+//    process_event(te, Ev_Input(1));
+//    process_event(te, Ev_Play());
+//    process_event(te, Ev_Input(0));
+//    process_event(te, Ev_Blink());
+//    process_event(te, Ev_Back());
+//  //process_event(te, Ev_Resume());
+//    process_event(te, Ev_Input(1));
+//    process_event(te, Ev_EndBlink());
+//    process_event(te, Ev_Input(0));
+//    process_event(te, Ev_Blink());
+//    process_event(te, Ev_Input(1));
+//    process_event(te, Ev_EndBlink());
+//    process_event(te, Ev_Input(0));
+//    process_event(te, Ev_Quit());
+//    process_event(te, Ev_Quit());
+//  //process_event(te, Ev_Quit());
 //
 //    return 0;
 //}
