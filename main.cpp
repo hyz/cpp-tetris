@@ -335,10 +335,9 @@ public:
             template <class Ev, class SM, class SS, class TS>
             void operator()(Ev const& ev, SM& sm, SS&, TS&) {
                 if (!_move(ev.di, "speedown.wav")) {
-                    ::process_event(Top(), Ev_Over());
+                    ::process_event(Ev_Over());
                 }
             }
-            template <class Top,class SM>
             bool _move(int di, char const* snd)
             {
                 auto& top = Top();
@@ -359,7 +358,7 @@ public:
             template <class Ev, class SM, class SS, class TS>
             void operator()(Ev const&, SM&, SS&, TS&) {
                 if (!_move(0, nullptr)) {
-                    ::process_event(Top(), Ev_Over());
+                    ::process_event(Ev_Over());
                 }
             }
         };

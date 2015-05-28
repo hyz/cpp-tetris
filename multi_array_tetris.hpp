@@ -313,7 +313,7 @@ private:
             print2d(std::cerr, *a);
         }
         auto p = next_shape_data();
-        int x = ::sqrt(p.second);
+        int x = (int)::sqrt(p.second);
         pv_.resize(boost::extents[x][x]);
         pv_.assign(p.first, p.first + p.second);
         print2d(std::cerr, pv_);
@@ -350,7 +350,7 @@ private:
         };
         const int N = 2 + sizeof(_3x3v)/(3*3);
 
-        ::srand(time(0));
+        ::srand((int)time(0));
 		switch(int x = ::rand() % N) {
 		  case 0: return std::make_pair(_2x2, 2*2);
 		  case 1: return std::make_pair(_4x4, 4*4);
@@ -367,12 +367,12 @@ private:
             {
                 if (i >= M.p_[0] && i < M.p_[0]+M.smat_.size()
                         && (j >= M.p_[1] && j < M.p_[1]+M.smat_[0].size())) {
-                    std::cerr << int(m[i][j] || M.smat_[i-M.p_[0]][j-M.p_[1]]) <<" ";
+                    std::clog << int(m[i][j] || M.smat_[i-M.p_[0]][j-M.p_[1]]) <<" ";
                     continue;
                 }
-                std::cerr << int(m[i][j]) <<" ";
+				std::clog << int(m[i][j]) << " ";
             }
-            std::cerr << int(m[i][m[0].size()-1])<<"\n";
+			std::clog << int(m[i][m[0].size() - 1]) << "\n";
         }
         return out;
     }
