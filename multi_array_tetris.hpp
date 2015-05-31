@@ -7,7 +7,7 @@
 #include "boost/cstdlib.hpp"
 #include "make_array.hpp"
 
-typedef boost::multi_array<char,2> Array2d;
+typedef boost::multi_array<int8_t,2> Array2d;
 typedef Array2d::array_view<2>::type Array2d_view_t;
 using boost::array;
 using boost::make_array;
@@ -100,8 +100,8 @@ template <typename X> void break_p(X) {}
 
 struct Array2dx : Array2d
 {
-    char dummy_;
-    char& at(Point const& a)
+    int8_t dummy_;
+    int8_t& at(Point const& a)
     {
         if (a[1] < 0 || a[1] >= int(shape()[1]) || a[0] >= int(shape()[0])) {
             // std::cerr << V2d(a) <<" 1\n"; break_p();
@@ -113,9 +113,9 @@ struct Array2dx : Array2d
         }
         return Array2d::operator()(a);
     }
-    char  at(Point const& a) const { return const_cast<Array2dx&>(*this).at(a); }
-    char  operator()(Point const& a) const { return at(a); }
-    char& operator()(Point const& a) { return at(a); }
+    int8_t  at(Point const& a) const { return const_cast<Array2dx&>(*this).at(a); }
+    int8_t  operator()(Point const& a) const { return at(a); }
+    int8_t& operator()(Point const& a) { return at(a); }
 };
 
 template <typename M, typename N>
@@ -169,17 +169,17 @@ struct arrayvec : private std::array<T,N>
 
 typedef arrayvec<uint8_t,7> round_result;
 
-struct Tetris_Basic // : Array2d
+struct Tetris_base // : Array2d
 {
-    //std::vector<std::pair<char*,size_t>> const const_mats_;
+    //std::vector<std::pair<int8_t*,size_t>> const const_mats_;
     Array2dx vmat_;
     Point p_;
     Array2d smat_, pv_;
 	boost::posix_time::ptime tb_, td_;
     round_result last_round_result;
-    // std::vector<unsigned char> scores_;
+    // std::vector<unsigned int8_t> scores_;
 
-    Tetris_Basic() //: const_mats_(mats_init())
+    Tetris_base() //: const_mats_(mats_init())
     {}
 
     void new_game(size_t h, size_t w) { reset(h,w); }
@@ -313,52 +313,58 @@ private:
             print2d(std::cerr, *a);
         }
         auto p = next_shape_data();
-        int x = (int)::sqrt(p.second);
+        int x = (int)/*::sqrt*/(p.second);
         pv_.resize(boost::extents[x][x]);
         pv_.assign(p.first, p.first + p.second);
         print2d(std::cerr, pv_);
     }
 
-    static std::pair<char*,size_t> next_shape_data()
+    static std::pair<int8_t*,size_t> next_shape_data()
     {
-        static char _2x2[] = {
+        static int8_t _2x2[] = {
             1,1,
             1,1
         };
-        static char _4x4[] = {
+        static int8_t _4x4[] = {
             0, 1, 0, 0,
             0, 1, 0, 0,
             0, 1, 0, 0,
             0, 1, 0, 0
         };
-        static char _3x3v[][9] = {
-            { 0, 1, 0, //[0]
-              1, 1, 1,
-              0, 0, 0 },
-            { 1, 1, 0, //[1]
-              0, 1, 1,
-              0, 0, 0 },
-            { 0, 1, 1, //[2]
-              1, 1, 0,
-              0, 0, 0 },
-            { 1, 1, 0, //[3]
-              0, 1, 0,
-              0, 1, 0 },
-            { 0, 1, 1, //[4]
-              0, 1, 0,
-              0, 1, 0 }
+        static int8_t _3x3v[][9] = {
+            { ////======[0]
+                0, 1, 0,
+                1, 1, 1,
+                0, 0, 0
+            },{ //======[1]
+                1, 1, 0,
+                0, 1, 1,
+                0, 0, 0
+            },{ //======[2]
+                0, 1, 1,
+                1, 1, 0,
+                0, 0, 0
+            },{ //======[3]
+                1, 1, 0,
+                0, 1, 0,
+                0, 1, 0
+            },{ //======[4]
+                0, 1, 1,
+                0, 1, 0,
+                0, 1, 0
+            {   //======[ ]
         };
         const int N = 2 + sizeof(_3x3v)/(3*3);
 
         ::srand((int)time(0));
-		switch(int x = ::rand() % N) {
-		  case 0: return std::make_pair(_2x2, 2*2);
-		  case 1: return std::make_pair(_4x4, 4*4);
-		  default: return std::make_pair(_3x3v[x-2], 3*3);
+		switch (int x = ::rand() % N) {
+            case 0: return std::make_pair(_2x2, 2/*2x2*/);
+            case 1: return std::make_pair(_4x4, 4/*4x4*/);
+            default: return std::make_pair(_3x3v[x-2], 3/*3x3*/);
         }
     }
 
-    friend std::ostream& operator<<(std::ostream& out, Tetris_Basic const& M)
+    friend std::ostream& operator<<(std::ostream& out, Tetris_base const& M)
     {
         auto& m = M.vmat_;
         for (Array2d::index i = 0; i != m.size(); ++i)
@@ -380,7 +386,7 @@ private:
 
 int main__(int argc, char* const argv[])
 {
-    Tetris_Basic M;
+    Tetris_base M;
     M.new_game(20, 10);  //std::cerr << M << "\n";
     while (M.next_round()) {
         M.rotate(); // std::cerr << M << "\n";

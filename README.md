@@ -6,7 +6,7 @@
 - http://en.wikipedia.org/wiki/Algorithms_%2B_Data_Structures_%3D_Programs
 - http://en.wikipedia.org/wiki/Model-view-controller
 
-cpp-tetris 尝试对这些编程思想的理解的表达。
+cpp-tetris 尝试表达对这些程序结构的理解。
 
 依赖库
 =============
@@ -14,7 +14,7 @@ cpp-tetris 尝试对这些编程思想的理解的表达。
 - Boost.MSM
 - C++ Cinder library (http://libcinder.org)
 
-只含两个文件
+只需要两个文件
 - multi_array_tetris.hpp
 - main.cpp
 

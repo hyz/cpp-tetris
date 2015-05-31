@@ -35,11 +35,11 @@ using namespace msm::front;
 //using namespace msm::front::euml; // for And_ operator
 
 static const int BOX_SIZE = 40;
-static const int BOX_SIZEpx = 41;
+static const int BOX_SIZEp1 = 41;
 
 struct Ev_Move {
-    int di; // -1:left, 0:down, 1:right
-    Ev_Move(int x) { di=x; }
+    int8_t di; // -1:left, 0:down, 1:right
+    Ev_Move(int8_t x) { di=x; }
 };
 struct Ev_Rotate {};
 struct Ev_Play {};
@@ -65,7 +65,7 @@ template <class Ev> void process_event(Ev const& ev)
     process_event(Top(), ev);
 }
 
-struct Model : Tetris_Basic
+struct Model : Tetris_base
 {
     //enum class stat { normal=0, over=1, pause };
 
@@ -78,8 +78,8 @@ struct Model : Tetris_Basic
         rounds_.clear();;
         // stat_ = stat::normal;
 
-        Tetris_Basic::reset(20, 10);  //std::cerr << model << "\n";
-        Tetris_Basic::next_round();
+        Tetris_base::reset(20, 10);  //std::cerr << model << "\n";
+        Tetris_base::next_round();
     }
 
     int get_score() const
@@ -199,7 +199,7 @@ Vec2i View::drawMain(Vec2i bp, Model const& M)
 
     drawArray2d(bp, M.vmat_, boxfg_, IsTrue());
 
-    Vec2i p( bp.x + BOX_SIZEpx*M.p_[1], bp.y + BOX_SIZEpx*M.p_[0] );
+    Vec2i p( bp.x + BOX_SIZEp1*M.p_[1], bp.y + BOX_SIZEp1*M.p_[0] );
     drawArray2d(p, M.smat_, boxfg_, IsTrue());
 
     return ep;
@@ -582,7 +582,7 @@ void App_::keyDown( KeyEvent event )
 		return;
     }
 
-    int di = 0;
+    int8_t di = 0;
     switch (event.getCode()) {
         case KeyEvent::KEY_ESCAPE: process_event(main_, Ev_Back()); return;
         case KeyEvent::KEY_SPACE: process_event(main_, Ev_Menu()); return;
